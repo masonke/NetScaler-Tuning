@@ -53,11 +53,6 @@ Make sure we are on the same page
 TCPProfile Arguments.
 =====================
 
-The Use column indicates out understanding of the option.
-
-N = Not fully understood, research in progress. Use with care.  
-Y = We understand and can use
-
 <table cellpadding="0" cellspacing="2">
 	<tr>
 		<td style="border: none; padding: 0in"><p align="center"><b>Arguments</b></p>
