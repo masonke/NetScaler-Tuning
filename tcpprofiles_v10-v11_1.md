@@ -1,3 +1,5 @@
+ NetScaler tcpprofile v10.5 - 11.1      td p { color: #000000 } h1 { color: #000000 } p { color: #000000 } h2 { color: #000000 } h2.cjk { font-family: "Songti SC" } h2.ctl { font-family: "Arial Unicode MS" } pre { color: #000000 } h3 { color: #000000 } h3.cjk { font-family: "Songti SC" } h3.ctl { font-family: "Arial Unicode MS" } a:link { color: #0000ff } a:visited { color: #800080 } 
+
 NetScaler tcpprofile v10.5 - v11.1
 ==================================
 
@@ -1106,6 +1108,11 @@ Useful only in proxy mode. Could be disabled
 			See <a href="https://support.citrix.com/article/CTX113656">How to
 			Configure, Verify, and Troubleshoot TCP Window Scaling on a
 			NetScaler Appliance</a> for details<br/>
+Note: Wireshark shows the
+			multiplication value, not the shift value.</p>
+		</td>
+	</tr>
+</table>
 
  1 NetScaler by default works in non-ENDPOINT mode, where the client and server handle the window/duplicate-ack/retransmission etc. NS will simply remap the packets and buffer only necessary packets for protocol parsing. The connection moves to ENDPOINT when NS needs to remake the packets. SSL/CMP/[TCPB](#NetScalertcpprofilev10.5-11.1-NetScaler)/ of tcpMode=ENDPOINT in tcpProfile.
 
