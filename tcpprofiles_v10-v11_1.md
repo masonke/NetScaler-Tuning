@@ -60,639 +60,1054 @@ The Use column indicates out understanding of the option.
 N = Not fully understood, research in progress. Use with care.  
 Y = We understand and can use
 
-**Arguments**
-
-**Ver**
-
-**Default Value**
-
-**Min**
-
-**Max**
-
-**sh cmd value**
-
-**Description**
-
-ackAggregation
-
-10.5
-
-Disabled
-
-ACK Aggregation
-
-Enable or disable ACK Aggregation.
-
-NetScaler TCP Stack does delayedAck by default i.e. waits for the second packet or configured delayedAck time in profile before ACK'ing the TCP Segment. When ackAggregation is enabled, NetScaler can ack up to 16 TCP Segments together.
-
-ackOnPush
-
-9
-
-Enabled
-
-–
-
-–
-
-Immediate ACK on PUSH packet
-
-Send immediate acknowledgement (ACK) on receipt of TCP packets with the PUSH bit set.
-
-bufferSize
-
-9.3
-
-8190
-
-–
-
-20971520
-
-TCP Buffer Size
-
-TCP Recieve Buffer Size. The value that you set is the minimum receive window that is advertised by the NetScaler appliance, and this buffer size is reserved when a client initiates a connection that is associated with an endpoint-application function, such as compression or SSL.  
-The managed application can request a larger buffer, but if it requests a smaller buffer, the request is not honored, and the specified buffer size is used. If the TCP buffer size is set both at the global level and at the entity level (virtual server or service level), the buffer specified at the entity level takes precedence. If the buffer size that you specify for a service is not the same as the buffer size that you specify for the virtual server to which the service is bound, the NetScaler appliance uses the buffer size specified for the virtual server for the client-side connection and the buffer size specified for the service for the server-side connection. However, for optimum results, make sure that the values specified for a virtual server and the services bound to it have the same value. The buffer size that you specify is used only when the connection is associated with endpoint-application functions, such as SSL and compression.  
-This is not related to  TCP buffering.
-
-Note: A high TCP buffer value could limit the number of connections that can be made to the NetScaler appliance.
-
-burstRateControl
-
-11
-
-Disabled
-
-Burst Rate Control
-
-In a NetScaler appliance, this technique evenly spreads the transmission of a packets across the entire duration of the round-trip-time (RTT). This is achieved by using a TCP stack and network packet scheduler that identifies the various network conditions to output packets for ongoing TCP sessions in order to reduce the bursts.  See  [TCP Optimization](https://docs.citrix.com/en-us/netscaler/11-1/system/TCP_Congestion_Control_and_Optimization_General.html) for details.  
-Possible values: Disabled / Fixed / Dynamic  
-Uses tcprate and rateqmax for tuning
-
-delayedAck
-
-9
-
-100
-
-10
-
-300
-
-TCP Delayed-ACK Timer
-
-The time-out for TCP delayed ACK, in milliseconds.
-
-dsack
-
-10.5
-
-Enabled
-
-Duplicate Selective Acknowledgement(DSACK)
-
-Enable or disable TCP Duplicate Selective Acknowledgement (DSACKs). Detection of spurious retransmissions can be done using TCP duplicate selective acknowledgement (D-SACK) and forward RTO-Recovery (F-RTO). In case of spurious retransmissions, the congestion control configurations are reverted to their original state.  The NetScaler implementation of D-SACK is RFC [2883](https://tools.ietf.org/html/rfc2883)  
-**Question: Not clear about OS support on clients and servers.**
-
-dupackthresh
-
-3
-
-1
-
-15
-
-TCP dupack threshold
-
-This is the number of duplicate ACKs after which NS will start fast-retransmit. [https://tools.ietf.org/html/rfc5681#section-3.2](https://tools.ietf.org/html/rfc5681#section-3.2)  
-  
-Entering fast-retransmit/fast-recovery will reduce the current congestion window and hence will affect throughput. This is generally not tuned and left as RFC default. But if you know for sure that the network doesn’t cause out-of-order but any out-of-order packets are definitely due to lost packets, or if the number of packets outstanding is generally low for some traffic patterns, then one can lower the threshold. Or if the network is more prone to out-of-order, one can increase the threshold by a little. SACK and early retransmit/limited retransmit algorithms usually take care of such network behavior and is better to leave this value at 3.
-
-dynamicReceiveBuffering
-
-10.5
-
-Enabled
-
-–
-
-–
-
-TCP Dynamic Receive Buffering
-
-Enable or disable dynamic receive buffering. When enabled, allows the receive buffer to be adjusted dynamically based on memory and network conditions.  
-Note: The buffer size argument must be set for dynamic adjustments to take place. 
-
-bufferSize and recvBufferSize take effect when the transaction is [ENDPOINT](#NetScalertcpprofilev10.5-11.1-NetScaler). By default, for ENDPOINT transactions, NetScaler will advertise the whole recvBufferSize as the window available to the Peer. When the NetScaler(NS) is under load, this may result in over-promising on available buffer/memory resulting to drops and further stress on the system. When dynamicReceiveBuffering is enabled, NS uses a internal algorithm to determine the amount of window to advertise, which takes into account, the minimum requested by Apps (like AppFW, CMP, SSL), the amount of memory available, the configured recvBufferSize and the window advertised by client (for server connections and vice versa for client connections)
-
-ecn
-
-10.5
-
-Disabled
-
-TCP Explicit Congestion Notification(ECN)
-
-Enable or disable TCP Explicit Congestion Notification. The NetScaler implementation of ECN is RFC [3168](http://tools.ietf.org/html/rfc3168) compliant.
-
-EstablishClientConn
-
-10.5
-
-AUTOMATIC
-
-Establishing Client Connection
-
-Establishing Client Client connection on First data/ Final-ACK / Automatic.  
-Possible values: AUTOMATIC, DISABLED
-
-With SYNCookie enabled, NetScaler doesn't create the TCP session even after TCP 3-way handshake for HTTP/SSL type vservers as NS knows that the Client should always send the first data packet. This behavior can be changed through this knob to create the session after 3-way handshake.
-
-fack
-
-10.5
-
-Disabled
-
-TCP Forward Acknowledgment(FACK)
-
-Enable or disable FACK (Forward ACK). (FACK) is a TCP option which works in conjunction with SACK and helps avoid TCP congestion by measuring the total number of data bytes that are outstanding in the network. Using the information from SACK, it can more precisely calculate how much data it can retransmit.
-
-enable/disable use of Forward ACKnowledgment (fack) algorithm during congestion control. FACK uses the information provided by the Selective ACK (sack) received during packet loss events to improve on existing congestion control algorithms.
-
-flavor
-
-10.5
-
-Default / New Reno
-
-–
-
-–
-
-TCP flavor
-
-Set TCP congestion control algorithm. Possible values: Default (New Reno), Westwood, BIC, CUBIC, Nile.
-
-Nile was added in v11
-
-frto
-
-10.5
-
-Disabled
-
-Forward RTO recovery(FRTO)
-
-Enable or disable FRTO (Forward RTO-Recovery). Detection of spurious retransmissions can be done using TCP duplicate selective acknowledgement (D-SACK) and forward RTO-Recovery (F-RTO). In case of spurious retransmissions, the congestion control configurations are reverted to their original state. The NetScaler implementation is RFC [5682](http://tools.ietf.org/html/rfc5682) compliant.
-
-Forward RTO recovery \[[https://tools.ietf.org/html/rfc5682](https://tools.ietf.org/html/rfc5682)\] algorithm to detect spurious retransmissions i.e. retransmitting packets unnecessarily as the receiver has delayed acknowledgement/RTT changes etc.
-
-hystart 
-
-11
-
-Disabled
-
-TCP Hybrid Start(HYSTART)
-
-A new TCP profile parameter, hystart, enables the Hystart algorithm, which is a slow-start algorithm that dynamically determines a safe point at which to terminate (ssthresh). It enables a transition to congestion avoidance without heavy packet losses. This new parameter is disabled by default.
-
-If congestion is detected, Hystart enters a congestion avoidance phase. Enabling it gives you better throughput in high-speed networks with high packet loss. This algorithm helps maintain close to maximum bandwidth while processing transactions. It can therefore improve throughput. See  [TCP Optimization](https://docs.citrix.com/en-us/netscaler/11-1/system/TCP_Congestion_Control_and_Optimization_General.html) for details.
-
-initialCwnd
-
-9
-
-4
-
-2
-
-44
-
-Initial congestion window(cwnd) setting
-
-The initial maximum upper limit on the number of TCP packets that can be outstanding on the TCP link to the server.
-
-KA
-
-10.5
-
-Disabled
-
-–
-
-–
-
-Keep-alive probes
-
-Send periodic TCP keep-alive (KA) probes to check if peer is still up.
-
-KAconnIdleTime
-
-10.5
-
-900
-
-1
-
-4095
-
-Connection idle time before starting keep-alive probes
-
-Duration, in seconds, for the connection to be idle, before sending a keep-alive (KA) probe.
-
-KAmaxProbes
-
-10.5
-
-3
-
-1
-
-255
-
-Maximum keep-alive probes to be missed before dropping connection
-
-"Number of keep-alive (KA) probes to be sent when not acknowledged, before assuming the peer to be down."
-
-KAprobeInterval
-
-10.5
-
-75
-
-1
-
-4095
-
-Keep-alive probe interval
-
-Time interval, in seconds, before the next keep-alive (KA) probe, if the peer does not respond.
-
-KAprobeUpdateLastactivity
-
-10.5
-
-Enabled
-
-–
-
-–
-
-Update Last activity on KA Probes
-
-This knob determines if any KeepAlive probe received on a connection will be treated as activity on that connection (thus updating the last activity time for that connection) for calculating the idletime of the connection. if disabled, a connection with only KA probe will get flushed as inactive after the idleTimeout.
-
-maxBurst
-
-9
-
-6
-
-1
-
-255
-
-Maximum TCP segments allowed in a burst
-
-The maximum number of TCP segments allowed in a burst. The higher this value, the more frames are able to be sent at one time.
-
-maxcwnd
-
-11
-
-524288
-
-8190
-
-20971520
-
-TCP Max congestion window(CWND)
-
-TCP Maximum Congestion Window
-
-maxPktPerMss
-
-9
-
-0
-
-0
-
-512
-
-Maximum packets per MSS
-
-The maximum number of TCP packets allowed per maximum segment size (MSS). A value of 0 means that no maximum is set.
-
-**This Profile parameter doesn't change much of the functionality in present releases. Please Ignore.**
-
-minRTO
-
-9
-
-100
-
-10
-
-64000
-
-TCP minimum Restransmission Timeout(RTO) in millisec
-
-" The minimum Receive Time Out (RTO) value, in milliseconds. The NetScale supports [http://en.wikipedia.org/wiki/TCP\_congestion\_avoidance\_algorithm New Reno](http://en.wikipedia.org/wiki/TCP_congestion_avoidance_algorithm%20New%20Reno) and conforms to RFC 2001 and RFC 5827
-
-mptcp
-
-10.5
-
-Disabled
-
-Multipath TCP
-
-Enable or disable Multipath TCP.
-
-mptcpDropDataOnPreEstSF
-
-10.5
-
-Disabled
-
-Multipath TCP drop data on pre-established subflow
-
-Enable or disable silently dropping the data on Pre-Established subflow. When enabled, DSS data packets are dropped silently instead of dropping the connection when data is received on pre established subflow.
-
-mptcpFastOpen
-
-10.5
-
-Disabled
-
-Multipath TCP fastopen
-
-Enable or disable Multipath TCP fastopen. When enabled, DSS data packets are accepted before receiving the third ack of SYN handshake.
-
-mptcpSessionTimeout
-
-10.5
-
-0
-
-0
-
-86400
-
-Multipath TCP session timeout
-
-MPTCP session timeout in seconds. If this value is not set, idle MPTCP sessions are flushed after vserver's client idle timeout.
-
-mss
-
-9
-
-0
-
-0
-
-9176
-
-Maximum Segment Size(MSS)
-
-Maximum number of octets to allow in a TCP data segment, used for Jumbo frames and VPNs
-
-From NetScaler 10.5 onwards, if the MSS value of the bound TCPprofile is 0, the MSS value is derived from the interface (and if applicable, VLAN) MTUs.  [\[From Build 50.10\] \[#422126, 425696\]](http://docs.citrix.com/en-us/netscaler/10-5/ns-rn-main-wrapper-10-5-con/main-releases/whats-new-in-previous-10-5-builds.html)
-
-nagle
-
-9
-
-Disabled
-
-–
-
-–
-
-Nagle's Algorithm
-
-Enable or disable the Nagle algorithm on TCP connections. When enabled, reduces the number of small segments by combining them into one packet. Primary use is on slow or congested links such as mobile or dial.
-
-oooQSize
-
-9
-
-64
-
-0
-
-65535
-
-Maximum out-of-order packets to queue
-
-The maximum size of out-of-order packets queue. A value of 0 means infinite.  
-The name is a misnomer, this buffer contains sent frames that are awaiting acks or received frames that are not sequential, meaning some packets are missing due to SACK
-
-pktPerRetx
-
-9
-
-1
-
-1
-
-512
-
-Maximum packets per retransmission
-
-The maximum limit on the number of packets that should be retransmitted on receiving a "partial ACK". Partial ACKare ACKs indicating not all outstanding frames were acked.
-
-rateqmax
-
-11
-
-0
-
-TCP Rate Maximum Queue
-
-Used with tcprate to tune burstRateControl
-
-rstMaxAck
-
-10.5
-
-Disabled
-
-Accept RST with last acknowledged sequence number
-
-Enable or disable acceptance of RST that is out of window yet echoes highest ACK sequence number.  
-Useful only in proxy mode. Could be disabled to prevent an attack. The NetScaler implementation of window attenuation is RFC [4953](http://tools.ietf.org/html/rfc4953) compliant
-
-rstWindowAttenuate
-
-10.5
-
-Disabled
-
-RST window attenuation (spoof protection)
-
-Enable or disable attack protection for TCP Reset (RST) spoofing. When enabled, this argument restricts TCP to accept only RST in the Sequence number range.
-
-If the NetScaler receives a RST with an invalid sequence number it will reply with a [corrective ACK2](#NetScalertcpprofilev10.5-11.1-NS_Correc). [https://tools.ietf.org/html/rfc4953#section-3.1.2](https://tools.ietf.org/html/rfc4953#section-3.1.2) .
-
-SACK
-
-9
-
-Disabled
-
-–
-
-–
-
-Selective Acknowledgement(SACK) status
-
-Enable or disable selective acknowledgement (SACK). Unless there is a bug in the code, there is NO reason this should be off.
-
-sendBuffsize
-
-10.5
-
-8190
-
-8190
-
-20971520
-
-TCP Send Buffer Size
-
-TCP Send Buffer Size
-
-slowStartIncr
-
-9
-
-2
-
-1
-
-100
-
-TCP Slow start increment
-
-The multiplier that determines the rate at which slow start increases the size of the TCP transmission window after each acknowledgement of successful transmission.
-
-spoofSynDrop
-
-10.5
-
-Enabled
-
-SYN spoof protection
-
-Enable or disable drop of invalid SYN packets to protect against spoofing. When disabled, established connections will be reset when a SYN packet is received.
-
-A TCP stack will send a [corrective ACK 2](#NetScalertcpprofilev10.5-11.1-NS_Correc) when a TCP SYN is received for an already established session.
-
-When this option is disabled, a corrective ACK is sent only if the TCP SYN is within the window advertised by the existing session. otherwise the session gets RESET
-
-synCookie
-
-10.5
-
-Enabled
-
-–
-
-–
-
-TCP Syncookie
-
-Enable or disable the SYNCOOKIE mechanism for TCP handshake with clients. Disabling SYNCOOKIE prevents SYN attack protection on the NetScaler appliance.
-
-When enabled, SYNCookie is ALWAYS used for connection established on Client side. There is no minimum threshold after which SYNCookie gets triggered. when disabled, NetScaler will always create the session after receiving the TCP SYN from Client (Useful for cases where server sends data first, like SMTP).  
-Note: This is different from normal implementations where the session is created only after the ACK is received, precluding the use of TCP Options
-
-[tcpFastOpen](#NetScalertcpprofilev10.5-11.1-NetScaler)
-
-11
-
-Disabled
-
-TCP Fastopen
-
-TCP Fast Open (TFO) is a TCP mechanism that enables speedy and safe data exchange between a client and a server during TCP’s initial handshake. This feature is available as a TCP option in the TCP profile bound to a virtual server of a NetScaler appliance. TFO uses a TCP Fast Open Cookie (a security cookie) that the NetScaler appliance generates to validate and authenticate the client initiating a TFO connection to the virtual server. By using the TFO mechanism, you can reduce an application's network latency by the time required for one full round trip, which significantly reduces the delay experienced in short TCP transfers. See  [TCP Optimization](https://docs.citrix.com/en-us/netscaler/11-1/system/TCP_Congestion_Control_and_Optimization_General.html) for details.
-
-tcpmode
-
-10.5
-
-TRANSPARENT
-
-TCP Optimization mode
-
-TCP Optimization modes TRANSPARENT / ENDPOINT. Possible values: TRANSPARENT, ENDPOINT enable or disable ENDPOINT mode for the flow. NetScaler by default works in non-ENDPOINT mode, where the client and server handle the window/duplicate-ack/retransmission etc. NS will simply remap the packets and buffer only necessary packets for protocol parsing. The connection moves to ENDPOINT when NS needs to remake the packets. SSL/CMP/[TCPB](#NetScalertcpprofilev10.5-11.1-NetScaler)/ of tcpMode=ENDPOINT in tcpProfile.
-
-tcprate
-
-11
-
-0
-
-TCP Rate
-
-Used with rateqmax to tune burstRateControl
-
-tcpSegOffload 
-
-10.5
-
-AUTOMATIC
-
-TCP Segmentation Offload
-
-Offload TCP segmentation to the NIC. If set to AUTOMATIC, TCP segmentation will be offloaded to the NIC, if the NIC supports it.
-
-TimeStamp
-
-10.5
-
-Disabled
-
-TCP Timestamp Option
-
-Enable or Disable TCP Timestamp option. The NetScaler implementation of TimeStamp option is RFC [1323](http://tools.ietf.org/html/rfc1323) compliant.
-
-**Do not use this option in ANY version**  
-\[From Build 61.11\] \[#593209\]  The NetScaler appliance does not reduce the received Maximum Segment Size (MSS) to accommodate TCP options (such as timestamps). Therefore, the NIC drops such packets.
-
-WS
-
-9
-
-Disabled
-
-–
-
-–
-
-Window Scaling status
-
-Enable or disable window scaling. If Disabled, Window Scaling is disabled for both sides of the conversation. There is NO reason this should be disabled
-
-WSVal
-
-9
-
-4
-
-0
-
-14
-
-Window Scaling factor
-
-The left shift factor used to calculate the receive window size. For a value of 3, multiply the Window size by 8. Has no impact if WS is disabled. See [How to Configure, Verify, and Troubleshoot TCP Window Scaling on a NetScaler Appliance](https://support.citrix.com/article/CTX113656) for details  
-Note: Wireshark shows the multiplication value, not the shift value.
+<table cellpadding="0" cellspacing="2">
+	<tr>
+		<td style="border: none; padding: 0in"><p align="center"><b>Arguments</b></p>
+		</td>
+		<td style="border: none; padding: 0in"><p align="center"><b>Ver</b></p>
+		</td>
+		<td style="border: none; padding: 0in"><p align="center"><b>Default
+			Value</b></p>
+		</td>
+		<td style="border: none; padding: 0in"><p align="center"><b>Min</b></p>
+		</td>
+		<td style="border: none; padding: 0in"><p align="center"><b>Max</b></p>
+		</td>
+		<td style="border: none; padding: 0in"><p align="center"><b>sh cmd
+			value</b></p>
+		</td>
+		<td style="border: none; padding: 0in"><p align="center"><b>Description</b></p>
+		</td>
+	</tr>
+	<tr>
+		<td style="border: none; padding: 0in"><p>ackAggregation</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>10.5</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>Disabled</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>&nbsp;</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>&nbsp;</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>ACK Aggregation</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>Enable or disable ACK
+			Aggregation.</p>
+			<p>NetScaler TCP Stack does delayedAck by default i.e. waits for
+			the second packet or configured delayedAck time in profile before
+			ACK'ing the TCP Segment. When ackAggregation is enabled, NetScaler
+			can ack up to 16 TCP Segments together.</p>
+		</td>
+	</tr>
+	<tr>
+		<td style="border: none; padding: 0in"><p>ackOnPush</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>9</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>Enabled</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>–</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>–</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>Immediate ACK on PUSH
+			packet</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>Send immediate
+			acknowledgement (ACK) on receipt of TCP packets with the PUSH bit
+			set.</p>
+		</td>
+	</tr>
+	<tr>
+		<td style="border: none; padding: 0in"><p>bufferSize</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>9.3</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>8190</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>–</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>20971520</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>TCP Buffer Size</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>TCP Recieve Buffer Size.
+			The value that you set is the minimum receive window that is
+			advertised by the NetScaler appliance, and this buffer size is
+			reserved when a client initiates a connection that is associated
+			with an endpoint-application function, such as compression or SSL.
+			<br/>
+The managed application can request a larger buffer, but if
+			it requests a smaller buffer, the request is not honored, and the
+			specified buffer size is used. If the TCP buffer size is set both
+			at the global level and at the entity level (virtual server or
+			service level), the buffer specified at the entity level takes
+			precedence. If the buffer size that you specify for a service is
+			not the same as the buffer size that you specify for the virtual
+			server to which the service is bound, the NetScaler appliance uses
+			the buffer size specified for the virtual server for the
+			client-side connection and the buffer size specified for the
+			service for the server-side connection. However, for optimum
+			results, make sure that the values specified for a virtual server
+			and the services bound to it have the same value. The buffer size
+			that you specify is used only when the connection is associated
+			with endpoint-application functions, such as SSL and compression.
+			<br/>
+This is not related to &nbsp;TCP buffering.</p>
+			<p>Note: A high TCP buffer value could limit the number of
+			connections that can be made to the NetScaler appliance.</p>
+		</td>
+	</tr>
+	<tr>
+		<td style="border: none; padding: 0in"><p>burstRateControl</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>11</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>Disabled</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>&nbsp;</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>&nbsp;</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>Burst Rate Control</p>
+		</td>
+		<td style="border: none; padding: 0in"><p><font color="#59595b">In
+			a NetScaler appliance, this technique evenly spreads the
+			transmission of a packets across the entire duration of the
+			round-trip-time (RTT). This is achieved by using a TCP stack and
+			network packet scheduler that identifies the various network
+			conditions to output packets for ongoing TCP sessions in order to
+			reduce the bursts. &nbsp;See &nbsp;</font><a href="https://docs.citrix.com/en-us/netscaler/11-1/system/TCP_Congestion_Control_and_Optimization_General.html">TCP
+			Optimization</a><font color="#59595b"> for details.<br/>
+Possible
+			values: Disabled / Fixed / Dynamic<br/>
+Uses&nbsp;tcprate&nbsp;and
+			rateqmax for tuning</font></p>
+		</td>
+	</tr>
+	<tr>
+		<td style="border: none; padding: 0in"><p>delayedAck</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>9</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>100</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>10</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>300</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>TCP Delayed-ACK Timer</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>The time-out for TCP
+			delayed ACK, in milliseconds.</p>
+		</td>
+	</tr>
+	<tr>
+		<td style="border: none; padding: 0in"><p>dsack</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>10.5</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>Enabled</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>&nbsp;</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>&nbsp;</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>Duplicate Selective
+			Acknowledgement(DSACK)</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>Enable or disable TCP
+			Duplicate Selective Acknowledgement (DSACKs). <font color="#59595b">Detection
+			of spurious retransmissions can be done using TCP duplicate
+			selective acknowledgement (D-SACK) and forward RTO-Recovery
+			(F-RTO). In case of spurious retransmissions, the congestion
+			control configurations are reverted to their original state.&nbsp;
+			The NetScaler implementation of D-SACK is RFC&nbsp;</font><a href="https://tools.ietf.org/html/rfc2883">2883</a><br/>
+<strong>Question:
+			Not clear about OS support on clients and servers.</strong></p>
+		</td>
+	</tr>
+	<tr>
+		<td style="border: none; padding: 0in"><p>dupackthresh</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>&nbsp;</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>3</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>1</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>15</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>TCP dupack threshold</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>This is the number of
+			duplicate ACKs after which NS will start fast-retransmit.
+			<a href="https://tools.ietf.org/html/rfc5681#section-3.2">https://tools.ietf.org/html/rfc5681#section-3.2</a><br/>
+<br/>
+Entering
+			fast-retransmit/fast-recovery will reduce the current congestion
+			window and hence will affect throughput. This is generally not
+			tuned and left as RFC default. But if you know for sure that the
+			network doesn’t cause out-of-order but any out-of-order packets
+			are definitely due to lost packets, or if the number of packets
+			outstanding is generally low for some traffic patterns, then one
+			can lower the threshold. Or if the network is more prone to
+			out-of-order, one can increase the threshold by a little. SACK and
+			early retransmit/limited retransmit algorithms usually take care
+			of such network behavior and is better to leave this value at 3.</p>
+		</td>
+	</tr>
+	<tr>
+		<td style="border: none; padding: 0in"><p>dynamicReceiveBuffering</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>10.5</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>Enabled</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>–</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>–</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>TCP Dynamic Receive
+			Buffering</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>Enable or disable dynamic
+			receive buffering. When enabled, allows the receive buffer to be
+			adjusted dynamically based on memory and network conditions.
+			<br/>
+Note: The buffer size argument must be set for dynamic
+			adjustments to take place.&nbsp;</p>
+			<p>bufferSize and recvBufferSize take effect when the transaction
+			is <a href="#NetScalertcpprofilev10.5-11.1-NetScaler">ENDPOINT</a>.
+			By default, for ENDPOINT transactions, NetScaler will advertise
+			the whole recvBufferSize as the window available to the Peer. When
+			the NetScaler(NS) is under load, this may result in over-promising
+			on available buffer/memory resulting to drops and further stress
+			on the system. When dynamicReceiveBuffering is enabled, NS uses a
+			internal algorithm to determine the amount of window to advertise,
+			which takes into account, the minimum requested by Apps (like
+			AppFW, CMP, SSL), the amount of memory available, the configured
+			recvBufferSize and the window advertised by client (for server
+			connections and vice versa for client connections)</p>
+		</td>
+	</tr>
+	<tr>
+		<td style="border: none; padding: 0in"><p>ecn</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>10.5</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>Disabled</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>&nbsp;</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>&nbsp;</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>TCP Explicit Congestion
+			Notification(ECN)</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>Enable or disable TCP
+			Explicit Congestion Notification. <font color="#59595b">The
+			NetScaler implementation of ECN is RFC&nbsp;</font><a href="http://tools.ietf.org/html/rfc3168">3168</a>
+			<font color="#59595b">compliant.</font></p>
+		</td>
+	</tr>
+	<tr>
+		<td style="border: none; padding: 0in"><p>EstablishClientConn</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>10.5</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>AUTOMATIC</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>&nbsp;</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>&nbsp;</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>Establishing Client
+			Connection</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>Establishing Client
+			Client connection on First data/ Final-ACK / Automatic.<br/>
+Possible
+			values: AUTOMATIC, DISABLED</p>
+			<p>With SYNCookie enabled, NetScaler doesn't create the TCP
+			session even after TCP 3-way handshake for HTTP/SSL type vservers
+			as NS knows that the Client should always send the first data
+			packet. This behavior can be changed through this knob to create
+			the session after 3-way handshake.</p>
+		</td>
+	</tr>
+	<tr>
+		<td style="border: none; padding: 0in"><p>fack</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>10.5</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>Disabled</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>&nbsp;</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>&nbsp;</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>TCP Forward
+			Acknowledgment(FACK)</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>Enable or disable FACK
+			(Forward ACK). (FACK) is a TCP option which works in conjunction
+			with SACK and helps avoid TCP congestion by measuring the total
+			number of data bytes that are outstanding in the network. Using
+			the information from SACK, it can more precisely calculate how
+			much data it can retransmit.</p>
+			<p><font color="#1f497d">enable/disable use of Forward
+			ACKnowledgment (fack) algorithm during congestion control. FACK
+			uses the information provided by the Selective ACK (sack) received
+			during packet loss events to improve on existing congestion
+			control algorithms.</font></p>
+		</td>
+	</tr>
+	<tr>
+		<td style="border: none; padding: 0in"><p>flavor</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>10.5</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>Default / New Reno</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>–</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>–</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>TCP flavor</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>Set TCP congestion
+			control algorithm. Possible values: Default (New Reno), Westwood,
+			BIC, CUBIC, Nile.</p>
+			<p>Nile was added in v11</p>
+		</td>
+	</tr>
+	<tr>
+		<td style="border: none; padding: 0in"><p>frto</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>10.5</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>Disabled</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>&nbsp;</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>&nbsp;</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>Forward RTO
+			recovery(FRTO)</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>Enable or disable FRTO
+			(Forward RTO-Recovery). <font color="#59595b">Detection of
+			spurious retransmissions can be done using TCP duplicate selective
+			acknowledgement (D-SACK) and forward RTO-Recovery (F-RTO). In case
+			of spurious retransmissions, the congestion control configurations
+			are reverted to their original state.&nbsp; </font>The NetScaler
+			implementation <font color="#59595b">is RFC&nbsp;</font><a href="http://tools.ietf.org/html/rfc5682">5682</a><font color="#59595b">&nbsp;compliant.</font></p>
+			<p>Forward RTO recovery [<a href="https://tools.ietf.org/html/rfc5682">https://tools.ietf.org/html/rfc5682</a>]
+			algorithm to detect spurious retransmissions i.e. retransmitting
+			packets unnecessarily as the receiver has delayed
+			acknowledgement/RTT changes etc.</p>
+		</td>
+	</tr>
+	<tr>
+		<td style="border: none; padding: 0in"><p>hystart&nbsp;</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>11</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>Disabled</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>&nbsp;</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>&nbsp;</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>TCP Hybrid Start(HYSTART)</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>A new TCP profile
+			parameter, hystart, enables the Hystart algorithm, which is a
+			slow-start algorithm that dynamically determines a safe point at
+			which to terminate (ssthresh). It enables a transition to
+			congestion avoidance without heavy packet losses. This new
+			parameter is disabled by default.</p>
+			<p>If congestion is detected, Hystart enters a congestion
+			avoidance phase. Enabling it gives you better throughput in
+			high-speed networks with high packet loss. This algorithm helps
+			maintain close to maximum bandwidth while processing transactions.
+			It can therefore improve throughput.&nbsp;<font color="#59595b">See
+			&nbsp;</font><a href="https://docs.citrix.com/en-us/netscaler/11-1/system/TCP_Congestion_Control_and_Optimization_General.html">TCP
+			Optimization</a><font color="#59595b"> for details.</font></p>
+		</td>
+	</tr>
+	<tr>
+		<td style="border: none; padding: 0in"><p>initialCwnd</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>9</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>4</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>2</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>44</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>Initial congestion
+			window(cwnd) setting</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>The initial maximum upper
+			limit on the number of TCP packets that can be outstanding on the
+			TCP link to the server.</p>
+		</td>
+	</tr>
+	<tr>
+		<td style="border: none; padding: 0in"><p>KA</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>10.5</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>Disabled</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>–</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>–</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>Keep-alive probes</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>Send periodic TCP
+			keep-alive (KA) probes to check if peer is still up.</p>
+		</td>
+	</tr>
+	<tr>
+		<td style="border: none; padding: 0in"><p>KAconnIdleTime</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>10.5</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>900</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>1</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>4095</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>Connection idle time
+			before starting keep-alive probes</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>Duration, in seconds, for
+			the connection to be idle, before sending a keep-alive (KA) probe.</p>
+		</td>
+	</tr>
+	<tr>
+		<td style="border: none; padding: 0in"><p>KAmaxProbes</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>10.5</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>3</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>1</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>255</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>Maximum keep-alive probes
+			to be missed before dropping connection</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>&quot;Number of
+			keep-alive (KA) probes to be sent when not acknowledged, before
+			assuming the peer to be down.&quot;</p>
+		</td>
+	</tr>
+	<tr>
+		<td style="border: none; padding: 0in"><p>KAprobeInterval</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>10.5</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>75</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>1</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>4095</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>Keep-alive probe interval</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>Time interval, in
+			seconds, before the next keep-alive (KA) probe, if the peer does
+			not respond.</p>
+		</td>
+	</tr>
+	<tr>
+		<td style="border: none; padding: 0in"><p>KAprobeUpdateLastactivity</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>10.5</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>Enabled</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>–</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>–</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>Update Last activity on
+			KA Probes</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>This knob determines if
+			any KeepAlive probe received on a connection will be treated as
+			activity on that connection (thus updating the last activity time
+			for that connection) for calculating the idletime of the
+			connection. if disabled, a connection with only KA probe will get
+			flushed as inactive after the idleTimeout.</p>
+		</td>
+	</tr>
+	<tr>
+		<td style="border: none; padding: 0in"><p>maxBurst</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>9</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>6</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>1</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>255</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>Maximum TCP segments
+			allowed in a burst</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>The maximum number of TCP
+			segments allowed in a burst. The higher this value, the more
+			frames are able to be sent at one time.</p>
+		</td>
+	</tr>
+	<tr>
+		<td style="border: none; padding: 0in"><p>maxcwnd</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>11</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>524288</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>8190</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>20971520</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>TCP Max congestion
+			window(CWND)</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>TCP Maximum Congestion
+			Window</p>
+		</td>
+	</tr>
+	<tr>
+		<td style="border: none; padding: 0in"><p>maxPktPerMss</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>9</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>0</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>0</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>512</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>Maximum packets per MSS</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>The maximum number of TCP
+			packets allowed per maximum segment size (MSS). A value of 0 means
+			that no maximum is set.</p>
+			<p><strong><font color="#ff6600">This Profile parameter doesn't
+			change much of the functionality in present releases. Please
+			Ignore.</font></strong></p>
+		</td>
+	</tr>
+	<tr>
+		<td style="border: none; padding: 0in"><p>minRTO</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>9</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>100</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>10</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>64000</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>TCP minimum
+			Restransmission Timeout(RTO) in millisec</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>&quot; The minimum
+			Receive Time Out (RTO) value, in milliseconds. The NetScale
+			supports
+			<a href="http://en.wikipedia.org/wiki/TCP_congestion_avoidance_algorithm%20New%20Reno">http://en.wikipedia.org/wiki/TCP_congestion_avoidance_algorithm
+			New Reno</a> and conforms to RFC 2001 and RFC 5827</p>
+		</td>
+	</tr>
+	<tr>
+		<td style="border: none; padding: 0in"><p>mptcp</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>10.5</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>Disabled</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>&nbsp;</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>&nbsp;</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>Multipath TCP</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>Enable or disable
+			Multipath TCP.</p>
+		</td>
+	</tr>
+	<tr>
+		<td style="border: none; padding: 0in"><p>mptcpDropDataOnPreEstSF</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>10.5</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>Disabled</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>&nbsp;</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>&nbsp;</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>Multipath TCP drop data
+			on pre-established subflow</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>Enable or disable
+			silently dropping the data on Pre-Established subflow. When
+			enabled, DSS data packets are dropped silently instead of dropping
+			the connection when data is received on pre established subflow.</p>
+		</td>
+	</tr>
+	<tr>
+		<td style="border: none; padding: 0in"><p>mptcpFastOpen</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>10.5</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>Disabled</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>&nbsp;</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>&nbsp;</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>Multipath TCP fastopen</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>Enable or disable
+			Multipath TCP fastopen. When enabled, DSS data packets are
+			accepted before receiving the third ack of SYN handshake.</p>
+		</td>
+	</tr>
+	<tr>
+		<td style="border: none; padding: 0in"><p>mptcpSessionTimeout</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>10.5</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>0</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>0</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>86400</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>Multipath TCP session
+			timeout</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>MPTCP session timeout in
+			seconds. If this value is not set, idle MPTCP sessions are flushed
+			after vserver's client idle timeout.</p>
+		</td>
+	</tr>
+	<tr>
+		<td style="border: none; padding: 0in"><p>mss</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>9</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>0</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>0</p>
+		</td>
+		<td style="border: none; padding: 0in"><p><font color="#59595b">9176</font></p>
+		</td>
+		<td style="border: none; padding: 0in"><p>Maximum Segment Size(MSS)</p>
+		</td>
+		<td style="border: none; padding: 0in"><p><font color="#59595b">Maximum
+			number of octets to allow in a TCP data segment, used for Jumbo
+			frames and VPNs</font></p>
+			<p>From NetScaler 10.5 onwards, if the MSS value of the bound
+			TCPprofile is 0, the MSS value is derived from the interface (and
+			if applicable, VLAN) MTUs.&nbsp; <a href="http://docs.citrix.com/en-us/netscaler/10-5/ns-rn-main-wrapper-10-5-con/main-releases/whats-new-in-previous-10-5-builds.html">[From
+			Build 50.10] [#422126, 425696]</a></p>
+		</td>
+	</tr>
+	<tr>
+		<td style="border: none; padding: 0in"><p>nagle</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>9</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>Disabled</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>–</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>–</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>Nagle's Algorithm</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>Enable or disable the
+			Nagle algorithm on TCP connections. When enabled, reduces the
+			number of small segments by combining them into one packet.
+			Primary use is on slow or congested links such as mobile or dial.</p>
+		</td>
+	</tr>
+	<tr>
+		<td style="border: none; padding: 0in"><p>oooQSize</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>9</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>64</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>0</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>65535</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>Maximum out-of-order
+			packets to queue</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>The maximum size of
+			out-of-order packets queue. A value of 0 means infinite. <br/>
+The
+			name is a misnomer, this buffer contains sent frames that are
+			awaiting acks or received frames that are not sequential, meaning
+			some packets are missing due to SACK</p>
+		</td>
+	</tr>
+	<tr>
+		<td style="border: none; padding: 0in"><p>pktPerRetx</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>9</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>1</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>1</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>512</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>Maximum packets per
+			retransmission</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>The maximum limit on the
+			number of packets that should be retransmitted on receiving a
+			&quot;partial ACK&quot;. Partial ACKare ACKs indicating not all
+			outstanding frames were acked.</p>
+		</td>
+	</tr>
+	<tr>
+		<td style="border: none; padding: 0in"><p>rateqmax</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>11</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>0</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>&nbsp;</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>&nbsp;</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>TCP Rate Maximum Queue</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>Used with tcprate to tune
+			burstRateControl</p>
+		</td>
+	</tr>
+	<tr>
+		<td style="border: none; padding: 0in"><p>rstMaxAck</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>10.5</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>Disabled</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>&nbsp;</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>&nbsp;</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>Accept RST with last
+			acknowledged sequence number</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>Enable or disable
+			acceptance of RST that is out of window yet echoes highest ACK
+			sequence number.<br/>
+Useful only in proxy mode. Could be disabled
+			to prevent an attack. The NetScaler implementation of window
+			attenuation is RFC&nbsp;<a href="http://tools.ietf.org/html/rfc4953">4953</a>&nbsp;compliant</p>
+		</td>
+	</tr>
+	<tr>
+		<td style="border: none; padding: 0in"><p>rstWindowAttenuate</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>10.5</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>Disabled</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>&nbsp;</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>&nbsp;</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>RST window attenuation
+			(spoof protection)</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>Enable or disable attack
+			protection for TCP Reset (RST) spoofing. When enabled, this
+			argument restricts TCP to accept only RST in the Sequence number
+			range.</p>
+			<p>If the NetScaler receives a RST with an invalid sequence number
+			it will reply with a <a href="#NetScalertcpprofilev10.5-11.1-NS_Correc">corrective
+			ACK<sup>2</sup></a>.
+			<a href="https://tools.ietf.org/html/rfc4953#section-3.1.2">https://tools.ietf.org/html/rfc4953#section-3.1.2</a>
+			.</p>
+		</td>
+	</tr>
+	<tr>
+		<td style="border: none; padding: 0in"><p>SACK</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>9</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>Disabled</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>–</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>–</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>Selective
+			Acknowledgement(SACK) status</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>Enable or disable
+			selective acknowledgement (SACK). Unless there is a bug in the
+			code, there is NO reason this should be off.</p>
+		</td>
+	</tr>
+	<tr>
+		<td style="border: none; padding: 0in"><p>sendBuffsize</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>10.5</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>8190</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>8190</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>20971520</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>TCP Send Buffer Size</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>TCP Send Buffer Size</p>
+		</td>
+	</tr>
+	<tr>
+		<td style="border: none; padding: 0in"><p>slowStartIncr</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>9</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>2</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>1</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>100</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>TCP Slow start increment</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>The multiplier that
+			determines the rate at which slow start increases the size of the
+			TCP transmission window after each acknowledgement of successful
+			transmission.</p>
+		</td>
+	</tr>
+	<tr>
+		<td style="border: none; padding: 0in"><p>spoofSynDrop</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>10.5</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>Enabled</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>&nbsp;</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>&nbsp;</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>SYN spoof protection</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>Enable or disable drop of
+			invalid SYN packets to protect against spoofing. When disabled,
+			established connections will be reset when a SYN packet is
+			received.</p>
+			<p>A TCP stack will send a <a href="#NetScalertcpprofilev10.5-11.1-NS_Correc">corrective
+			ACK <font color="#1f497d"><sup>2</font></sup></a><font color="#1f497d"><sup>&nbsp;</sup></font>
+			when a TCP SYN is received for an already established session.</p>
+			<p>When this option is disabled, a corrective ACK is sent only if
+			the TCP SYN is within the window advertised by the existing
+			session. otherwise the session gets RESET</p>
+		</td>
+	</tr>
+	<tr>
+		<td style="border: none; padding: 0in"><p>synCookie</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>10.5</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>Enabled</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>–</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>–</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>TCP Syncookie</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>Enable or disable the
+			SYNCOOKIE mechanism for TCP handshake with clients. Disabling
+			SYNCOOKIE prevents SYN attack protection on the NetScaler
+			appliance.</p>
+			<p>When enabled, SYNCookie is ALWAYS used for connection
+			established on Client side. There is no minimum threshold after
+			which SYNCookie gets triggered. when disabled, NetScaler will
+			always create the session after receiving the TCP SYN from Client
+			(Useful for cases where server sends data first, like SMTP).
+			<br/>
+<font color="#008000">Note: This is different from normal
+			implementations where the session is created only after the ACK is
+			received, precluding the use of TCP Options</font></p>
+		</td>
+	</tr>
+	<tr>
+		<td style="border: none; padding: 0in"><p><a href="#NetScalertcpprofilev10.5-11.1-NetScaler">tcpFastOpen</a></p>
+		</td>
+		<td style="border: none; padding: 0in"><p>11</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>Disabled</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>&nbsp;</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>&nbsp;</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>TCP Fastopen</p>
+		</td>
+		<td style="border: none; padding: 0in"><p><font color="#59595b">TCP
+			Fast Open (TFO) is a TCP mechanism that enables speedy and safe
+			data exchange between a client and a server during TCP’s initial
+			handshake. This feature is available as a TCP option in the TCP
+			profile bound to a virtual server of a NetScaler appliance. TFO
+			uses a TCP Fast Open Cookie (a security cookie) that the NetScaler
+			appliance generates to validate and authenticate the client
+			initiating a TFO connection to the virtual server. By using the
+			TFO mechanism, you can reduce an application's network latency by
+			the time required for one full round trip, which significantly
+			reduces the delay experienced in short TCP transfers. See &nbsp;</font><a href="https://docs.citrix.com/en-us/netscaler/11-1/system/TCP_Congestion_Control_and_Optimization_General.html">TCP
+			Optimization</a><font color="#59595b"> for details.</font></p>
+		</td>
+	</tr>
+	<tr>
+		<td style="border: none; padding: 0in"><p>tcpmode</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>10.5</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>TRANSPARENT</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>&nbsp;</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>&nbsp;</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>TCP Optimization mode</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>TCP Optimization modes
+			TRANSPARENT / ENDPOINT. Possible values: TRANSPARENT,
+			ENDPOINT&nbsp;enable or disable ENDPOINT mode for the flow.
+			<font color="#1f497d">NetScaler by default works in non-ENDPOINT
+			mode, where the client and server handle the
+			window/duplicate-ack/retransmission etc. NS will simply remap the
+			packets and buffer only necessary packets for protocol parsing.
+			The connection moves to ENDPOINT when NS needs to remake the
+			packets. SSL/CMP/</font><a href="#NetScalertcpprofilev10.5-11.1-NetScaler">TCPB</a><font color="#1f497d">/
+			of tcpMode=ENDPOINT in tcpProfile.</font></p>
+		</td>
+	</tr>
+	<tr>
+		<td style="border: none; padding: 0in"><p>tcprate</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>11</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>0</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>&nbsp;</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>&nbsp;</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>TCP Rate</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>Used with rateqmax to
+			tune burstRateControl</p>
+		</td>
+	</tr>
+	<tr>
+		<td style="border: none; padding: 0in"><p>tcpSegOffload&nbsp;</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>10.5</p>
+		</td>
+		<td style="border: none; padding: 0in"><p><font color="#59595b">AUTOMATIC</font></p>
+		</td>
+		<td style="border: none; padding: 0in"><p>&nbsp;</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>&nbsp;</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>TCP Segmentation Offload</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>Offload TCP segmentation
+			to the NIC. If set to AUTOMATIC, TCP segmentation will be
+			offloaded to the NIC, if the NIC supports it.</p>
+		</td>
+	</tr>
+	<tr>
+		<td style="border: none; padding: 0in"><p>TimeStamp</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>10.5</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>Disabled</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>&nbsp;</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>&nbsp;</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>TCP Timestamp Option</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>Enable or Disable TCP
+			Timestamp option. <font color="#59595b">The NetScaler
+			implementation of TimeStamp option is RFC&nbsp;</font><a href="http://tools.ietf.org/html/rfc1323">1323</a><font color="#59595b">&nbsp;compliant.
+			</font>
+			</p>
+			<p><strong><font color="#ff0000">Do not use this option in ANY
+			version</font></strong><br/>
+[From Build 61.11] [#593209] &nbsp;The
+			NetScaler appliance does not reduce the received Maximum Segment
+			Size (MSS) to accommodate TCP options (such as timestamps).
+			Therefore, the NIC drops such packets.</p>
+		</td>
+	</tr>
+	<tr>
+		<td style="border: none; padding: 0in"><p>WS</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>9</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>Disabled</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>–</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>–</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>Window Scaling status</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>Enable or disable window
+			scaling. If Disabled, Window Scaling is disabled for both sides of
+			the conversation. There is NO reason this should be disabled</p>
+		</td>
+	</tr>
+	<tr>
+		<td style="border: none; padding: 0in"><p>WSVal</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>9</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>4</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>0</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>14</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>Window Scaling factor</p>
+		</td>
+		<td style="border: none; padding: 0in"><p>The left shift factor
+			used to calculate the receive window size. For a value of 3,
+			multiply the Window size by 8. Has no impact if WS is disabled.
+			See <a href="https://support.citrix.com/article/CTX113656">How to
+			Configure, Verify, and Troubleshoot TCP Window Scaling on a
+			NetScaler Appliance</a> for details<br/>
 
  1 NetScaler by default works in non-ENDPOINT mode, where the client and server handle the window/duplicate-ack/retransmission etc. NS will simply remap the packets and buffer only necessary packets for protocol parsing. The connection moves to ENDPOINT when NS needs to remake the packets. SSL/CMP/[TCPB](#NetScalertcpprofilev10.5-11.1-NetScaler)/ of tcpMode=ENDPOINT in tcpProfile.
 
