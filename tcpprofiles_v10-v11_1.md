@@ -1,5 +1,3 @@
- NetScaler tcpprofile v10.5 - 11.1      td p { color: #000000 } h1 { color: #000000 } p { color: #000000 } h2 { color: #000000 } h2.cjk { font-family: "Songti SC" } h2.ctl { font-family: "Arial Unicode MS" } pre { color: #000000 } h3 { color: #000000 } h3.cjk { font-family: "Songti SC" } h3.ctl { font-family: "Arial Unicode MS" } a:link { color: #0000ff } a:visited { color: #800080 } 
-
 NetScaler tcpprofile v10.5 - v11.1
 ==================================
 
