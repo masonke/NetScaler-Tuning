@@ -40,7 +40,7 @@ v10.5 - 11.1 TCPParam Variables
 		</td>
 		<td style="border: none; padding: 0in"><p align="center"><b>Max</b></p>
 		</td>
-		<td style="border: none; padding: 0in"><p align="center"><b>FirstData</b></p>
+		<td style="border: none; padding: 0in"><p align="center"><b>Suggested</b></p>
 		</td>
 		<td style="border: none; padding: 0in"><p align="center"><b>Description</b></p>
 		</td>
