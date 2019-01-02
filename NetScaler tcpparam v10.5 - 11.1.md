@@ -213,7 +213,7 @@ See Also: connFlushThres argument below.</p>
 			peer.<br/>
 <br/>
 When enabled, NS will clean up the connection
-			after 7 persist probes donât result in window opening from peer.</p>
+			after 7 persist probes do not result in window opening from peer.</p>
 		</td>
 	</tr>
 	<tr>
@@ -248,10 +248,10 @@ When enabled, NS will clean up the connection
 		<td style="border: none; padding: 0in"><p>7</p>
 		</td>
 		<td style="border: none; padding: 0in"><p class="msonormal">This is
-			relevant only in case of wildcard (IP/Port is â*â)
+			relevant only in case of wildcard (IP/Port is “*”))
 			entities/vpn etc. where NetScaler learns the actual server-info by
 			sending the probe to the backend/origin IP received from the
-			client SYNâs destination IP. This knob limits the number of
+			client SYNs destination IP. This knob limits the number of
 			probes each Packet Engine/core on NetScaler can send in 10
 			milliseconds. When this is exceeded, the incoming SYN are simply
 			dropped. The client would generally retry and the connection
