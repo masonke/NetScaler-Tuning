@@ -1,7 +1,7 @@
-Change the initial advertised receive window
+Change the initial advertised receive window v10.5 & up
 ============================================
 
-The NetScaler always starts with a initial receive window (rwin) of 8190. This is fine, except if the peer does not have SACK, or they want to send a burst of packets and drop. With a rwin of 8190, the peer can only send 5 packets and then has to wait for a ACK before proceeding. With a rwin of 65535, that number is boosted to 44.
+The NetScaler always starts with a initial receive window (rwin) of 8190. This is fine, except if the peer does not have SACK, or they want to send a burst of packets. With a rwin of 8190, the peer can only send 5 full packets and then has to wait for a ACK before proceeding. With a rwin of 65535, that number is boosted to 44.
 
 The only way to change the initial advertised window on the NetScaler is through nsapimgr.  You will have to put this in rc.netscaler to persist across reboots.
 
