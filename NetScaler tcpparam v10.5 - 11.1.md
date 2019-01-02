@@ -52,9 +52,9 @@ v10.5 - 11.1 TCPParam Variables
 		</td>
 		<td style="border: none; padding: 0in"><p>ENABLED</p>
 		</td>
-		<td style="border: none; padding: 0in"><p>â</p>
+		<td style="border: none; padding: 0in"><p>---</p>
 		</td>
-		<td style="border: none; padding: 0in"><p>â</p>
+		<td style="border: none; padding: 0in"><p>---</p>
 		</td>
 		<td style="border: none; padding: 0in"><p>ENABLED</p>
 		</td>
@@ -145,9 +145,9 @@ See Also: connFlushThres argument below.</p>
 		</td>
 		<td style="border: none; padding: 0in"><p>DISABLED</p>
 		</td>
-		<td style="border: none; padding: 0in"><p>â</p>
+		<td style="border: none; padding: 0in"><p>---</p>
 		</td>
-		<td style="border: none; padding: 0in"><p>â</p>
+		<td style="border: none; padding: 0in"><p>---</p>
 		</td>
 		<td style="border: none; padding: 0in"><p>ENABLED</p>
 		</td>
@@ -183,9 +183,9 @@ See Also: connFlushThres argument below.</p>
 		</td>
 		<td style="border: none; padding: 0in"><p>DISABLED</p>
 		</td>
-		<td style="border: none; padding: 0in"><p>â</p>
+		<td style="border: none; padding: 0in"><p>---</p>
 		</td>
-		<td style="border: none; padding: 0in"><p>â</p>
+		<td style="border: none; padding: 0in"><p>---</p>
 		</td>
 		<td style="border: none; padding: 0in"><p>DISABLED</p>
 		</td>
@@ -200,9 +200,9 @@ See Also: connFlushThres argument below.</p>
 		</td>
 		<td style="border: none; padding: 0in"><p>ENABLED</p>
 		</td>
-		<td style="border: none; padding: 0in"><p>â</p>
+		<td style="border: none; padding: 0in"><p>---</p>
 		</td>
-		<td style="border: none; padding: 0in"><p>â</p>
+		<td style="border: none; padding: 0in"><p>---</p>
 		</td>
 		<td style="border: none; padding: 0in"><p>ENABLED</p>
 		</td>
@@ -613,9 +613,9 @@ When enabled, NS will clean up the connection
 		</td>
 		<td style="border: none; padding: 0in"><p>DISABLED</p>
 		</td>
-		<td style="border: none; padding: 0in"><p>â</p>
+		<td style="border: none; padding: 0in"><p>---</p>
 		</td>
-		<td style="border: none; padding: 0in"><p>â</p>
+		<td style="border: none; padding: 0in"><p>---</p>
 		</td>
 		<td style="border: none; padding: 0in"><p>DISABLED</p>
 		</td>
@@ -684,9 +684,9 @@ When enabled, NS will clean up the connection
 		</td>
 		<td style="border: none; padding: 0in"><p>DISABLED</p>
 		</td>
-		<td style="border: none; padding: 0in"><p>â</p>
+		<td style="border: none; padding: 0in"><p>---</p>
 		</td>
-		<td style="border: none; padding: 0in"><p>â</p>
+		<td style="border: none; padding: 0in"><p>---</p>
 		</td>
 		<td style="border: none; padding: 0in"><p>ENABLED</p>
 		</td>
@@ -794,9 +794,9 @@ When enabled, NS will clean up the connection
 		</td>
 		<td style="border: none; padding: 0in"><p>DISABLED</p>
 		</td>
-		<td style="border: none; padding: 0in"><p>â</p>
+		<td style="border: none; padding: 0in"><p>---</p>
 		</td>
-		<td style="border: none; padding: 0in"><p>â</p>
+		<td style="border: none; padding: 0in"><p>---</p>
 		</td>
 		<td style="border: none; padding: 0in"><p>ENABLED</p>
 		</td>
